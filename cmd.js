@@ -1,6 +1,6 @@
 function CMD(){
     
-    var models = {}, views = {}, commands = {}, osd = [];
+    var models = {}, views = {}, commands = {}, controllers = {}, osd = [];
     var msgListeners = {}, cmdListeners = {};
     
     
@@ -10,6 +10,14 @@ function CMD(){
     
     this.getModel = function(name){
         return models[name];
+    };
+    
+    this.addController = function(name, controller){
+        return (controllers[name] = new controller());
+    };
+    
+    this.getController = function(name){
+        return controllers[name];
     };
     
     this.addView = function(name, view){
