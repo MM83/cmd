@@ -1,27 +1,31 @@
 function CMD(){
     
-    var models = {}, views = {}, commands = {}, controllers = {}, osd = [];
+    var models = {}, views = {}, commands = {}, master, osd = [];
     var msgListeners = {}, cmdListeners = {};
     
     
     this.addModel = function(name, model){
         return (models[name] = new model());
+        if(model.onRegister)
+            model.onRegister();
     };
     
     this.getModel = function(name){
         return models[name];
     };
     
-    this.addController = function(name, controller){
-        return (controllers[name] = new controller());
+    this.addMaster = function(func){
+         master = func;
     };
     
-    this.getController = function(name){
-        return controllers[name];
+    this.getMaster = function(){
+        return master;
     };
     
     this.addView = function(name, view){
-        views[name] = new view();
+        return views[name] = new view();
+        if(view.onRegister)
+            view.onRegister();
     };
     
     this.getView = function(name){
@@ -89,6 +93,7 @@ function CMD(){
     
     this.start = function(startData){
         var i, o;
+        
         for(i in views){
             o = views[i];
             if(o.onStart)
@@ -99,6 +104,10 @@ function CMD(){
             if(o.onStart)
                 o.onStart(startData);
         }
+        
+        if(master)
+            master(startData);
+        
         for(i in osd)
             osd[i](startData);
     };
