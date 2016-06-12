@@ -5,10 +5,6 @@ exports.CMD = function(){
     
     var ref = this;
     
-    this.getString = function(){
-        return "SHITTO";
-    };
-    
     this.addModel = function(name, model){
         var mod = new model();
         if(mod.onRegister)
@@ -32,7 +28,7 @@ exports.CMD = function(){
         var v = new view();
         if(v.onRegister)
             v.onRegister(ref);
-        return (models[name] = v);
+        return (views[name] = v);
     };
     
     this.getView = function(name){
@@ -48,7 +44,7 @@ exports.CMD = function(){
     };
     
     this.sendMessage = function(name, data){
-        var arr = listeners[name];
+        var arr = msgListeners[name];
         if(!arr)
             return;
         for(var i in arr){
