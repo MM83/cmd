@@ -1,13 +1,19 @@
-function CMD(){
+exports.CMD = function(){
     
     var models = {}, views = {}, commands = {}, master, osd = [];
     var msgListeners = {}, cmdListeners = {};
     
+    var ref = this;
+    
+    this.getString = function(){
+        return "SHITTO";
+    };
     
     this.addModel = function(name, model){
-        return (models[name] = new model());
-        if(model.onRegister)
-            model.onRegister();
+        var mod = new model();
+        if(mod.onRegister)
+            mod.onRegister(ref);
+        return (models[name] = mod);
     };
     
     this.getModel = function(name){
@@ -23,9 +29,10 @@ function CMD(){
     };
     
     this.addView = function(name, view){
-        return views[name] = new view();
-        if(view.onRegister)
-            view.onRegister();
+        var v = new view();
+        if(v.onRegister)
+            v.onRegister(ref);
+        return (models[name] = v);
     };
     
     this.getView = function(name){
@@ -91,7 +98,7 @@ function CMD(){
         osd.push(func);
     };
     
-    this.start = function(startData){
+    this.start = function(){
         var i, o;
         
         for(i in views){
@@ -105,11 +112,14 @@ function CMD(){
                 o.onStart(startData);
         }
         
-        if(master)
-            master(startData);
-        
         for(i in osd)
-            osd[i](startData);
+            osd[i](ref);
+        
+        if(master)
+            master(ref);
+        
     };
+    
+    
     
 };
